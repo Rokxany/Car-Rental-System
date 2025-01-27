@@ -245,6 +245,23 @@ class Car_rental_system {
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
+            while (true) {      // added password system only for admin
+                if (choice == 1) {
+                    String password = "admin123";
+                    System.out.println("(Default Password: admin123)");
+                    System.out.print("Enter Password: ");
+                    String pass = scanner.nextLine();
+
+                if (pass.equals(password)) {
+                        break;
+                    } else {
+                        System.out.println("Wrong password");
+                    }
+                } else if (choice == 2 || choice == 3) {
+                    break;
+                }
+            }
+
             switch (choice) {
                 case 1: // Admin Interface
                     while (true) {
