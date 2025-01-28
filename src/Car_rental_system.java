@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -162,7 +163,7 @@ class ClientLL {
                 anyRentals = true;
                 System.out.print("Client Name: " + temp.clientName + " (Phone: " + temp.clientPhoneNo + ") - Rented Cars: ");
                 for (int i = 0; i < temp.rentedCarCount; i++) {
-                    System.out.print(temp.rentedCars[i].model + " ");
+                    System.out.print(temp.rentedCars[i].model + ",");
                 }
                 System.out.println();
             }
@@ -218,9 +219,9 @@ class PaymentStack {
 
     public void displayAllPayments() {
         if (payments.isEmpty()) {
-            System.out.println("No payments recorded.");
+            System.out.println("No records available.");
         } else {
-            System.out.println("All Payments (most recent first):");
+            System.out.println("All Records of Payments (most recent first):");
             for (Payment payment : payments) {
                 System.out.println(payment);
             }
@@ -239,23 +240,32 @@ class Car_rental_system {
         while (true) {
             System.out.println("\n--- Car Rental System ---");
             System.out.println("1. Admin Login");
-            System.out.println("2. Customer Login");
-            System.out.println("3. Exit");
+            System.out.println("2. Customer Login ");
+            System.out.println("3. Exit ");
             System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
 
-            while (true) {      // added password system only for admin
+            int choice = -1;
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine();
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input! Please enter a valid number.");
+                scanner.nextLine();
+                continue;
+            }
+
+            // Admin Password Check
+            while (true) {
                 if (choice == 1) {
                     String password = "admin123";
                     System.out.println("(Default Password: admin123)");
                     System.out.print("Enter Password: ");
                     String pass = scanner.nextLine();
 
-                if (pass.equals(password)) {
+                    if (pass.equals(password)) {
                         break;
                     } else {
-                        System.out.println("Wrong password");
+                        System.out.println("Wrong password. Try again.");
                     }
                 } else if (choice == 2 || choice == 3) {
                     break;
@@ -268,14 +278,22 @@ class Car_rental_system {
                         System.out.println("\n--- Admin Menu ---");
                         System.out.println("1. Add a Car");
                         System.out.println("2. Add a Client");
-                        System.out.println("3. Display All Clients");
-                        System.out.println("4. Display Client Rentals");
+                        System.out.println("3. View All Clients");
+                        System.out.println("4. View Client Rentals");
                         System.out.println("5. View Recent Payment");
-                        System.out.println("6. Display All Payments");
+                        System.out.println("6. View All Records");
                         System.out.println("7. Logout");
                         System.out.print("Enter your choice: ");
-                        int adminChoice = scanner.nextInt();
-                        scanner.nextLine();
+
+                        int adminChoice = -1;
+                        try {
+                            adminChoice = scanner.nextInt();
+                            scanner.nextLine(); // Consume newline
+                        } catch (InputMismatchException e) {
+                            System.out.println("Invalid input! Please enter a valid number.");
+                            scanner.nextLine(); // Clear the invalid input
+                            continue; // Restart the loop
+                        }
 
                         switch (adminChoice) {
                             case 1:
@@ -292,7 +310,15 @@ class Car_rental_system {
                                 System.out.print("Enter Client Name: ");
                                 String clientName = scanner.nextLine();
                                 System.out.print("Enter Client Phone Number: ");
-                                int clientPhone = scanner.nextInt();
+                                int clientPhone = -1;
+                                try {
+                                    clientPhone = scanner.nextInt();
+                                    scanner.nextLine(); // Consume newline
+                                } catch (InputMismatchException e) {
+                                    System.out.println("Invalid phone number! Please enter a valid number.");
+                                    scanner.nextLine(); // Clear the invalid input
+                                    break;
+                                }
                                 clientList.addClient(clientName, clientPhone);
                                 break;
 
@@ -331,8 +357,16 @@ class Car_rental_system {
                         System.out.println("3. Return a Car");
                         System.out.println("4. Logout");
                         System.out.print("Enter your choice: ");
-                        int customerChoice = scanner.nextInt();
-                        scanner.nextLine();
+
+                        int customerChoice = -1;
+                        try {
+                            customerChoice = scanner.nextInt();
+                            scanner.nextLine();
+                        } catch (InputMismatchException e) {
+                            System.out.println("Invalid input! Please enter a valid number.");
+                            scanner.nextLine();
+                            continue;
+                        }
 
                         switch (customerChoice) {
                             case 1:
@@ -354,12 +388,19 @@ class Car_rental_system {
                                 if (rentedCar != null) {
                                     client.rentedCars[client.rentedCarCount++] = rentedCar;
                                     System.out.print("Enter rental amount: ");
-                                    double amount = scanner.nextDouble();
-                                    scanner.nextLine();
+                                    double amount = -1;
+                                    try {
+                                        amount = scanner.nextDouble();
+                                        scanner.nextLine();
+                                    } catch (InputMismatchException e) {
+                                        System.out.println("Invalid amount! Please enter a valid number.");
+                                        scanner.nextLine();
+                                        break;
+                                    }
                                     System.out.print("Enter rental date (e.g., 2025-01-25): ");
                                     String date = scanner.nextLine();
                                     paymentStack.addPayment(clientName, carID, amount, date);
-                                    System.out.println(STR."Car rented successfully: \{rentedCar.model}");
+                                    System.out.println("Car rented successfully: " + rentedCar.model);
                                 } else {
                                     System.out.println("Car not available or invalid Car ID.");
                                 }
